@@ -235,3 +235,29 @@ cp = 'mkdir -p "$1" && zk list --quiet --format path --delimiter0 ${@:2} | xargs
 ```
 
 Usage: `zk cp output/ --created-after 'last two weeks'`
+
+### Find and delete notes
+
+This alias allows you to interactively filter your notes in `fzf` and select one
+or more to delete **permanently** with `rm`.
+
+```toml
+rm = "zk list --interactive --quiet --format '{{abs-path}}' --delimiter0 \"$@\" | xargs -t -0 -I % bash -c 'if [ -n % ] ; then rm %; fi'"
+```
+
+To choose a single note to delete, highlight it and press `Enter`. To exit
+without deleting anything, press `Escape` or `Ctrl-C`.
+
+To enable multiselect support, add the following to your configuration file:
+
+```toml
+[tool]
+fzf-options = "-m ..."
+```
+
+Make sure to [add back any default options to `fzf` that you would like to
+keep](./tool-fzf.md#fzf-options) after the `-m`.
+
+Once multiselect is enabled, you can use `Tab` to select an item, `Shift-Tab` to
+deselect it, and `Enter` to delete the currently selected notes. If no notes are
+selected, pressing `Enter` will delete the currently-highlighted note.
